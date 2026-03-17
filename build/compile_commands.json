@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/elliot/Documents/model-viewer/build",
+  "command": "/usr/bin/c++  -I/home/elliot/Documents/model-viewer/include  -o CMakeFiles/ModelViewer.dir/src/main.cpp.o -c /home/elliot/Documents/model-viewer/src/main.cpp",
+  "file": "/home/elliot/Documents/model-viewer/src/main.cpp",
+  "output": "CMakeFiles/ModelViewer.dir/src/main.cpp.o"
+},
+{
+  "directory": "/home/elliot/Documents/model-viewer/build",
+  "command": "/usr/bin/cc  -I/home/elliot/Documents/model-viewer/include  -o CMakeFiles/ModelViewer.dir/src/glad.c.o -c /home/elliot/Documents/model-viewer/src/glad.c",
+  "file": "/home/elliot/Documents/model-viewer/src/glad.c",
+  "output": "CMakeFiles/ModelViewer.dir/src/glad.c.o"
+}
+]

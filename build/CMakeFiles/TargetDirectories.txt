@@ -1,0 +1,3 @@
+/home/elliot/Documents/model-viewer/build/CMakeFiles/ModelViewer.dir
+/home/elliot/Documents/model-viewer/build/CMakeFiles/edit_cache.dir
+/home/elliot/Documents/model-viewer/build/CMakeFiles/rebuild_cache.dir

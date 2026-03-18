@@ -1,9 +1,18 @@
+// Assimp
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+
+// GLM
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+
+// GLAD & GLFW
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <vector>
 
 int main(){
     glfwInit(); // initialize
@@ -60,13 +69,59 @@ int main(){
 
     glLinkProgram(shaderProgram);
 
+    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+    glEnable(GL_DEPTH_TEST); // Depth Enabling
+    
+    // OpenGL Mathematics (GLM)
+    glm::mat4 view = glm::mat4(1.0f); // camera
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -5.0f));
+    
+    glm::mat4 projection = glm::mat4(1.0f); // field of view, aspect ratio, near plane, far plane
+    projection = glm::perspective(glm::radians(45.0f), 800.0f/600.0f, 0.1f, 100.0f);
+    
+    std::vector<float> objVertices;
+    
+    Assimp::Importer importer;
+    std::string path = "../models/chicken.obj"; 
+    const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    
+    if(!scene || scene -> mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene -> mRootNode){
+        std::cout << "ERROR::ASSIMP::" << importer.GetErrorString() << std::endl;
+        return -1;
+    }else{
+        std::cout << "Model loaded successfully: " << path << std::endl;
+    }
+    
+    for (unsigned int m =0; m < scene -> mNumMeshes; m++){
+        aiMesh * mesh = scene -> mMeshes[m]; // instead of hardcoded to determined meshes
+
+        for (unsigned int i = 0; i <mesh -> mNumFaces; i++){
+            aiFace face = mesh->mFaces[i];
+            for (unsigned int j = 0; j < face.mNumIndices; j++){
+                unsigned int index = face.mIndices[j];
+    
+                objVertices.push_back(mesh -> mVertices[index].x);
+                objVertices.push_back(mesh -> mVertices[index].y);
+                objVertices.push_back(mesh -> mVertices[index].z);
+            }
+        }
+    }
 
     // VBO & VAO
-    float vertices[] = { // VBO
-        -0.5f, -0.5f, 0.0f, 
-         0.5f, -0.5f, 0.0f, 
-         0.0f,  0.5f, 0.0f  
-    };
+    // float vertices[] = { // VBO
+    //     -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  
+    //     0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
+    //     -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  
+    //     0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f, -0.5f,  0.5f,
+    //     -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  
+    //     -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
+    //     0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  
+    //     0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,
+    //     -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  
+    //     0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f,
+    //     -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  
+    //     0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f
+    // };
 
     unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
@@ -74,25 +129,19 @@ int main(){
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
+    glBufferData(GL_ARRAY_BUFFER, objVertices.size()*sizeof(float) , objVertices.data(), GL_STATIC_DRAW);
+    
     glVertexAttribPointer(0,3 , GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
 
-    // OpenGL Mathematics (GLM)
-    glm::mat4 view = glm::mat4(1.0f); // camera
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    
-    glm::mat4 projection = glm::mat4(1.0f); // field of view, aspect ratio, near plane, far plane
-    projection = glm::perspective(glm::radians(45.0f), 800.0f/600.0f, 0.1f, 100.0f);
-    
     while(!glfwWindowShouldClose(window)){
         glClearColor(0.2f,0.3f,0.3f,1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
-        glm::mat4 model = glm::mat4(1.0f); // model
-        float angle = glfwGetTime() * glm::radians(50.0f); // Rotate 50 degrees per second
+        glm::mat4 model = glm::mat4(1.0f); // object
+        model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f)); // scalling obj
+        float angle = glfwGetTime() * glm::radians(50.0f); // rotate 50 degrees per second
         model = glm::rotate(model, angle , glm::vec3(0.5f, 1.0f, 0.0f));
 
         glUseProgram(shaderProgram);
@@ -107,7 +156,7 @@ int main(){
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0 , 3);
+        glDrawArrays(GL_TRIANGLES, 0 , objVertices.size()/3);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

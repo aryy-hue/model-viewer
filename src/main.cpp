@@ -36,23 +36,42 @@ int main(){
     }
     // OpenGL Shading Language (GLSL)
     // Vertex Shader
-    const char *vertexShaderSource = "#version 330 core\n"
-    "layout (location = 0) in vec3 aPos;\n"
-    "uniform mat4 model;\n"
-    "uniform mat4 view;\n"
-    "uniform mat4 projection;\n"
-    "void main()\n"
-    "{\n"
-    "   // Projection * View * Model * Posisi\n"
-    "   gl_Position = projection * view * model * vec4(aPos, 1.0f);\n"
-    "}\0";
-
+    const char *vertexShaderSource = 
+        "#version 330 core\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "layout (location = 1) in vec3 aNormal;\n"
+        "out vec3 Normal;\n"
+        "out vec3 FragPos;\n"
+        "uniform mat4 model;\n"
+        "uniform mat4 view;\n"
+        "uniform mat4 projection;\n"
+        "void main()\n"
+        "{\n"
+        "   FragPos = vec3(model * vec4(aPos, 1.0));\n"
+        "   Normal = mat3(transpose(inverse(model))) * aNormal;\n"
+        "   gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
+        "}\0";
+        
     // Fragment Shader
-    const char *fragmentShaderSource = "#version 330 core\n"
+    const char *fragmentShaderSource = 
+        "#version 330 core\n"
+        "in vec3 Normal;\n"
+        "in vec3 FragPos;\n"
         "out vec4 FragColor;\n"
         "void main()\n"
         "{\n"
-        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f); // Warna oranye\n"
+        "   vec3 objectColor = vec3(1.0, 0.5, 0.2);\n"
+        "   vec3 lightColor = vec3(1.0, 1.0, 1.0);\n"
+        "   vec3 lightPos = vec3(2.0, 5.0, 3.0);\n"
+            
+        "   float ambientStrength = 0.2;\n"
+        "   vec3 ambient = ambientStrength * lightColor;\n"
+        "   vec3 norm = normalize(Normal);\n"
+        "   vec3 lightDir = normalize(lightPos - FragPos);\n"
+        "   float diff = max(dot(norm, lightDir), 0.0);\n"
+        "   vec3 diffuse = diff * lightColor;\n"
+        "   vec3 result = (ambient + diffuse) * objectColor;\n"
+        "   FragColor = vec4(result, 1.0);\n"
         "}\n\0";
 
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -69,7 +88,7 @@ int main(){
 
     glLinkProgram(shaderProgram);
 
-    glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); 
+    // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE); // Wireframe mode
     glEnable(GL_DEPTH_TEST); // Depth Enabling
     
     // OpenGL Mathematics (GLM)
@@ -79,10 +98,10 @@ int main(){
     glm::mat4 projection = glm::mat4(1.0f); // field of view, aspect ratio, near plane, far plane
     projection = glm::perspective(glm::radians(45.0f), 800.0f/600.0f, 0.1f, 100.0f);
     
-    std::vector<float> objVertices;
+    std::vector<float> objVertices; // Store vertices and normals from the OBJ file
     
     Assimp::Importer importer;
-    std::string path = "../models/chicken.obj"; 
+    std::string path = "../models/Suzanne.obj"; 
     const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     
     if(!scene || scene -> mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene -> mRootNode){
@@ -103,12 +122,23 @@ int main(){
                 objVertices.push_back(mesh -> mVertices[index].x);
                 objVertices.push_back(mesh -> mVertices[index].y);
                 objVertices.push_back(mesh -> mVertices[index].z);
+                // Check if the mesh has normals
+                if (mesh -> HasNormals()){
+                    objVertices.push_back(mesh -> mNormals[index].x);
+                    objVertices.push_back(mesh -> mNormals[index].y);
+                    objVertices.push_back(mesh -> mNormals[index].z);
+                }else{
+                    objVertices.push_back(0.0f);
+                    objVertices.push_back(0.0f);
+                    objVertices.push_back(1.0f);
+                }
             }
         }
     }
 
     // VBO & VAO
-    // float vertices[] = { // VBO
+    // VBO example, hardcoded vertices for a cube
+    // float vertices[] = { 
     //     -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  
     //     0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
     //     -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  
@@ -131,18 +161,21 @@ int main(){
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBufferData(GL_ARRAY_BUFFER, objVertices.size()*sizeof(float) , objVertices.data(), GL_STATIC_DRAW);
     
-    glVertexAttribPointer(0,3 , GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
     glBindVertexArray(0);
 
     while(!glfwWindowShouldClose(window)){
-        glClearColor(0.2f,0.3f,0.3f,1.0f);
+        glClearColor(0.2f,0.231f,0.2f,1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         
         glm::mat4 model = glm::mat4(1.0f); // object
-        model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f)); // scalling obj
-        float angle = glfwGetTime() * glm::radians(50.0f); // rotate 50 degrees per second
-        model = glm::rotate(model, angle , glm::vec3(0.5f, 1.0f, 0.0f));
+        model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f)); // scalling obj
+        float angle = glfwGetTime() * glm::radians(5.0f); // rotate n degrees per second
+        model = glm::rotate(model, angle , glm::vec3(0.0f, 0.5f, 0.0f));
 
         glUseProgram(shaderProgram);
 
@@ -156,7 +189,7 @@ int main(){
         glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
         glBindVertexArray(VAO);
-        glDrawArrays(GL_TRIANGLES, 0 , objVertices.size()/3);
+        glDrawArrays(GL_TRIANGLES, 0 , objVertices.size()/6);
         glfwSwapBuffers(window);
         glfwPollEvents();
     }

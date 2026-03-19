@@ -5,15 +5,15 @@ Custom-built 3D model viewer developed from the ground up using C++ and modern O
 ## Tech Stack & Dependencies
 
 This project leverages industry-standard computer graphics libraries:
-* **C++17** *
+* **C++17** 
 * **OpenGL 3.3 Core Profile**
 * **GLFW** 
 * **GLAD** 
-* **GLM** *
+* **GLM** 
 * **Assimp** 
 * **CMake** 
 
-## Prerequisites (Linux / Fedora)
+## Prerequisites 
 
 Ensure you have a C++ compiler (`gcc-c++`), `cmake`, and `make` installed. For Fedora Linux users, you can install the required dependencies using the package manager:
 
@@ -22,7 +22,7 @@ sudo dnf install gcc-c++ cmake make glfw-devel glm-devel assimp-devel
 
 ```
 
-## How to run
+## How to Build
 Run the following commands in the root directory of the project
 ```bash
 # 1. Create a build directory

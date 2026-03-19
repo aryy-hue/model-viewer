@@ -6,7 +6,7 @@ Custom-built 3D model viewer developed from the ground up using C++ and modern O
 
 This project leverages industry-standard computer graphics libraries:
 * **C++17** 
-* **OpenGL 3.3 **
+* **OpenGL 3.3**
 * **GLFW** 
 * **GLAD** 
 * **GLM** 

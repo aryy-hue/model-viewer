@@ -1,6 +1,8 @@
 # 3D Model Viewer
 
-Custom-built 3D model viewer developed from the ground up using C++ and modern OpenGL (Core Profile). This project demonstrates a foundational understanding of the graphics pipeline, 3D transformation matrices, complex mesh data extraction, and fundamental lighting models.
+Custom-built 3D model viewer developed from the ground up using C++ and modern OpenGL. This project demonstrates a foundational understanding of the graphics pipeline, 3D transformation matrices, complex mesh data extraction, and fundamental lighting models.
+
+[Demo](assets/preview.gif)
 
 ## Tech Stack & Dependencies
 

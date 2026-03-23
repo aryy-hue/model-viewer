@@ -359,4 +359,10 @@ CMakeFiles/ModelViewer.dir/src/main.cpp.o: \
  /usr/include/c++/15/bits/stl_uninitialized.h \
  /usr/include/c++/15/bits/stl_vector.h \
  /usr/include/c++/15/bits/stl_bvector.h \
- /usr/include/c++/15/bits/vector.tcc
+ /usr/include/c++/15/bits/vector.tcc \
+ /home/elliot/Documents/model-viewer/src/stb_image.h \
+ /usr/include/c++/15/stdlib.h /usr/include/c++/15/math.h \
+ /usr/lib/gcc/x86_64-redhat-linux/15/include/emmintrin.h \
+ /usr/lib/gcc/x86_64-redhat-linux/15/include/xmmintrin.h \
+ /usr/lib/gcc/x86_64-redhat-linux/15/include/mmintrin.h \
+ /usr/lib/gcc/x86_64-redhat-linux/15/include/mm_malloc.h

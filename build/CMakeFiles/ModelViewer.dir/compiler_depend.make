@@ -73,6 +73,7 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o: /home/elliot/Documents/model-viewer/src
 CMakeFiles/ModelViewer.dir/src/main.cpp.o: /home/elliot/Documents/model-viewer/src/main.cpp \
   /home/elliot/Documents/model-viewer/include/KHR/khrplatform.h \
   /home/elliot/Documents/model-viewer/include/glad/glad.h \
+  /home/elliot/Documents/model-viewer/src/stb_image.h \
   /usr/include/GLFW/glfw3.h \
   /usr/include/alloca.h \
   /usr/include/asm-generic/bitsperlong.h \
@@ -298,12 +299,14 @@ CMakeFiles/ModelViewer.dir/src/main.cpp.o: /home/elliot/Documents/model-viewer/s
   /usr/include/c++/15/iostream \
   /usr/include/c++/15/istream \
   /usr/include/c++/15/limits \
+  /usr/include/c++/15/math.h \
   /usr/include/c++/15/new \
   /usr/include/c++/15/ostream \
   /usr/include/c++/15/pstl/execution_defs.h \
   /usr/include/c++/15/pstl/glue_algorithm_defs.h \
   /usr/include/c++/15/pstl/pstl_config.h \
   /usr/include/c++/15/stdexcept \
+  /usr/include/c++/15/stdlib.h \
   /usr/include/c++/15/streambuf \
   /usr/include/c++/15/string \
   /usr/include/c++/15/string_view \
@@ -548,12 +551,16 @@ CMakeFiles/ModelViewer.dir/src/main.cpp.o: /home/elliot/Documents/model-viewer/s
   /usr/include/time.h \
   /usr/include/wchar.h \
   /usr/include/wctype.h \
+  /usr/lib/gcc/x86_64-redhat-linux/15/include/emmintrin.h \
   /usr/lib/gcc/x86_64-redhat-linux/15/include/float.h \
   /usr/lib/gcc/x86_64-redhat-linux/15/include/limits.h \
+  /usr/lib/gcc/x86_64-redhat-linux/15/include/mm_malloc.h \
+  /usr/lib/gcc/x86_64-redhat-linux/15/include/mmintrin.h \
   /usr/lib/gcc/x86_64-redhat-linux/15/include/stdarg.h \
   /usr/lib/gcc/x86_64-redhat-linux/15/include/stddef.h \
   /usr/lib/gcc/x86_64-redhat-linux/15/include/stdint.h \
-  /usr/lib/gcc/x86_64-redhat-linux/15/include/syslimits.h
+  /usr/lib/gcc/x86_64-redhat-linux/15/include/syslimits.h \
+  /usr/lib/gcc/x86_64-redhat-linux/15/include/xmmintrin.h
 
 ModelViewer: /lib64/ld-linux-x86-64.so.2 \
   /lib64/libc.so.6 \
@@ -605,8 +612,6 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 
 /usr/lib64/libm.so:
 
-/usr/lib64/libassimp.so:
-
 /usr/lib64/crt1.o:
 
 /lib64/libc.so.6:
@@ -618,6 +623,8 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 /usr/lib/gcc/x86_64-redhat-linux/15/include/syslimits.h:
 
 /usr/lib/gcc/x86_64-redhat-linux/15/include/float.h:
+
+/usr/lib/gcc/x86_64-redhat-linux/15/include/emmintrin.h:
 
 /usr/include/time.h:
 
@@ -634,6 +641,8 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 /usr/include/glm/mat3x4.hpp:
 
 /usr/include/glm/mat3x3.hpp:
+
+/usr/lib/gcc/x86_64-redhat-linux/15/include/mmintrin.h:
 
 /usr/include/glm/mat2x3.hpp:
 
@@ -811,6 +820,8 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 
 /usr/include/glm/detail/type_quat.hpp:
 
+/usr/lib/gcc/x86_64-redhat-linux/15/include/mm_malloc.h:
+
 /usr/include/glm/detail/type_mat4x4.inl:
 
 /usr/include/glm/detail/type_mat4x4.hpp:
@@ -846,6 +857,8 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 /usr/include/glm/vector_relational.hpp:
 
 /usr/include/glm/detail/type_float.hpp:
+
+/usr/lib/gcc/x86_64-redhat-linux/15/include/xmmintrin.h:
 
 /usr/include/glm/ext/matrix_clip_space.inl:
 
@@ -931,6 +944,16 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 
 /usr/include/c++/15/tr1/bessel_function.tcc:
 
+/usr/include/glm/ext/matrix_double2x3_precision.hpp:
+
+/usr/include/c++/15/string_view:
+
+/usr/include/glm/trigonometric.hpp:
+
+/usr/include/c++/15/string:
+
+/usr/include/c++/15/streambuf:
+
 /usr/include/bits/mathcalls.h:
 
 /usr/include/bits/types/__fpos_t.h:
@@ -952,8 +975,6 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 /usr/include/assimp/vector2.inl:
 
 /usr/include/c++/15/bits/basic_ios.h:
-
-/usr/include/assimp/vector2.h:
 
 /usr/include/glm/ext/quaternion_relational.inl:
 
@@ -1001,14 +1022,6 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 
 /usr/include/assimp/color4.h:
 
-/usr/include/wchar.h:
-
-/usr/include/glm/mat3x2.hpp:
-
-/usr/include/bits/posix1_lim.h:
-
-/usr/include/c++/15/cerrno:
-
 /usr/include/wctype.h:
 
 /usr/include/sched.h:
@@ -1037,11 +1050,19 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 
 /usr/include/asm-generic/errno-base.h:
 
+/usr/include/c++/15/math.h:
+
 /usr/include/glm/ext/vector_bool4.hpp:
 
 /usr/include/asm-generic/types.h:
 
 /usr/include/asm-generic/bitsperlong.h:
+
+/usr/include/assimp/vector2.h:
+
+/usr/include/glm/detail/type_vec1.inl:
+
+/usr/include/c++/15/bits/locale_classes.tcc:
 
 /usr/lib/gcc/x86_64-redhat-linux/15/include/stdarg.h:
 
@@ -1082,6 +1103,8 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 /usr/include/bits/time64.h:
 
 /usr/include/c++/15/x86_64-redhat-linux/bits/gthr-default.h:
+
+/home/elliot/Documents/model-viewer/src/stb_image.h:
 
 /usr/include/bits/stdlib-float.h:
 
@@ -1313,6 +1336,14 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 
 /usr/include/stdio.h:
 
+/usr/include/wchar.h:
+
+/usr/include/glm/mat3x2.hpp:
+
+/usr/include/bits/posix1_lim.h:
+
+/usr/include/c++/15/cerrno:
+
 /usr/include/glm/ext/matrix_float2x3_precision.hpp:
 
 /usr/include/bits/posix2_lim.h:
@@ -1351,6 +1382,14 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 
 /usr/include/c++/15/bits/cxxabi_init_exception.h:
 
+/lib64/libm.so.6:
+
+/usr/lib/gcc/x86_64-redhat-linux/15/include/limits.h:
+
+/usr/include/c++/15/bits/hash_bytes.h:
+
+/usr/include/c++/15/algorithm:
+
 /usr/include/assimp/defs.h:
 
 /usr/include/c++/15/bits/range_access.h:
@@ -1388,8 +1427,6 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 /usr/include/bits/wctype-wchar.h:
 
 /usr/include/c++/15/bits/cpp_type_traits.h:
-
-/usr/include/c++/15/streambuf:
 
 /usr/include/c++/15/bits/streambuf.tcc:
 
@@ -1444,18 +1481,6 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 /usr/include/c++/15/bits/functional_hash.h:
 
 /usr/include/c++/15/ext/type_traits.h:
-
-/lib64/libm.so.6:
-
-/usr/lib/gcc/x86_64-redhat-linux/15/include/limits.h:
-
-/usr/include/c++/15/algorithm:
-
-/usr/include/c++/15/bits/hash_bytes.h:
-
-/usr/include/glm/detail/type_vec1.inl:
-
-/usr/include/c++/15/bits/locale_classes.tcc:
 
 /usr/include/bits/dlfcn.h:
 
@@ -1613,10 +1638,6 @@ CMakeFiles/ModelViewer.dir/src/glad.c.o:
 
 /usr/include/c++/15/stdexcept:
 
-/usr/include/glm/trigonometric.hpp:
+/usr/lib64/libassimp.so:
 
-/usr/include/c++/15/string:
-
-/usr/include/glm/ext/matrix_double2x3_precision.hpp:
-
-/usr/include/c++/15/string_view:
+/usr/include/c++/15/stdlib.h:

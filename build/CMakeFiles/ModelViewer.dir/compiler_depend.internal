@@ -75,6 +75,7 @@ CMakeFiles/ModelViewer.dir/src/main.cpp.o
  /home/elliot/Documents/model-viewer/src/main.cpp
  /home/elliot/Documents/model-viewer/include/KHR/khrplatform.h
  /home/elliot/Documents/model-viewer/include/glad/glad.h
+ /home/elliot/Documents/model-viewer/src/stb_image.h
  /usr/include/GLFW/glfw3.h
  /usr/include/alloca.h
  /usr/include/asm-generic/bitsperlong.h
@@ -300,12 +301,14 @@ CMakeFiles/ModelViewer.dir/src/main.cpp.o
  /usr/include/c++/15/iostream
  /usr/include/c++/15/istream
  /usr/include/c++/15/limits
+ /usr/include/c++/15/math.h
  /usr/include/c++/15/new
  /usr/include/c++/15/ostream
  /usr/include/c++/15/pstl/execution_defs.h
  /usr/include/c++/15/pstl/glue_algorithm_defs.h
  /usr/include/c++/15/pstl/pstl_config.h
  /usr/include/c++/15/stdexcept
+ /usr/include/c++/15/stdlib.h
  /usr/include/c++/15/streambuf
  /usr/include/c++/15/string
  /usr/include/c++/15/string_view
@@ -550,12 +553,16 @@ CMakeFiles/ModelViewer.dir/src/main.cpp.o
  /usr/include/time.h
  /usr/include/wchar.h
  /usr/include/wctype.h
+ /usr/lib/gcc/x86_64-redhat-linux/15/include/emmintrin.h
  /usr/lib/gcc/x86_64-redhat-linux/15/include/float.h
  /usr/lib/gcc/x86_64-redhat-linux/15/include/limits.h
+ /usr/lib/gcc/x86_64-redhat-linux/15/include/mm_malloc.h
+ /usr/lib/gcc/x86_64-redhat-linux/15/include/mmintrin.h
  /usr/lib/gcc/x86_64-redhat-linux/15/include/stdarg.h
  /usr/lib/gcc/x86_64-redhat-linux/15/include/stddef.h
  /usr/lib/gcc/x86_64-redhat-linux/15/include/stdint.h
  /usr/lib/gcc/x86_64-redhat-linux/15/include/syslimits.h
+ /usr/lib/gcc/x86_64-redhat-linux/15/include/xmmintrin.h
 
 ModelViewer
  /lib64/ld-linux-x86-64.so.2

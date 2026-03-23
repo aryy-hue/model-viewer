@@ -14,6 +14,9 @@
 #include <iostream>
 #include <vector>
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 5.0f);
 glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
 glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -110,15 +113,21 @@ int main(){
         "#version 330 core\n"
         "layout (location = 0) in vec3 aPos;\n"
         "layout (location = 1) in vec3 aNormal;\n"
+        "layout (location = 2) in vec2 aTexCoord;\n"
+        
         "out vec3 Normal;\n"
         "out vec3 FragPos;\n"
+        "out vec2 TexCoord;\n"
+
         "uniform mat4 model;\n"
         "uniform mat4 view;\n"
         "uniform mat4 projection;\n"
+        
         "void main()\n"
         "{\n"
         "   FragPos = vec3(model * vec4(aPos, 1.0));\n"
         "   Normal = mat3(transpose(inverse(model))) * aNormal;\n"
+        "   TexCoord = aTexCoord;\n"
         "   gl_Position = projection * view * model * vec4(aPos, 1.0);\n"
         "}\0";
         
@@ -127,10 +136,13 @@ int main(){
         "#version 330 core\n"
         "in vec3 Normal;\n"
         "in vec3 FragPos;\n"
+        "in vec2 TexCoord;\n"
         "out vec4 FragColor;\n"
+        "uniform sampler2D texture1;\n"
+
         "void main()\n"
         "{\n"
-        "   vec3 objectColor = vec3(1.0, 0.5, 0.2);\n"
+        "   vec3 objectColor = vec3(texture(texture1, TexCoord));\n"
         "   vec3 lightColor = vec3(1.0, 1.0, 1.0);\n"
         "   vec3 lightPos = vec3(2.0, 5.0, 3.0);\n"
             
@@ -173,7 +185,7 @@ int main(){
         glfwSetCursorPosCallback(window, mouse_callback);
 
         Assimp::Importer importer;
-        std::string path = "../models/Suzanne.obj"; 
+        std::string path = "../models/chicken.obj"; 
         const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
     
     if(!scene || scene -> mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene -> mRootNode){
@@ -204,6 +216,14 @@ int main(){
                     objVertices.push_back(0.0f);
                     objVertices.push_back(1.0f);
                 }
+                // Check if the mesh has texture coordinates
+                if(mesh -> mTextureCoords[0]){
+                    objVertices.push_back(mesh-> mTextureCoords[0][index].x);
+                    objVertices.push_back(mesh-> mTextureCoords[0][index].y);
+                }else{
+                    objVertices.push_back(0.0f);
+                    objVertices.push_back(0.0f);
+                }
             }
         }
     }
@@ -211,19 +231,19 @@ int main(){
     // VBO & VAO
     // VBO example, hardcoded vertices for a cube
     // float vertices[] = { 
-        //     -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  
-        //     0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
-        //     -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  
-        //     0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f, -0.5f,  0.5f,
-        //     -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  
-        //     -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
-        //     0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  
-        //     0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,
-        //     -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  
-        //     0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f,
-        //     -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  
-        //     0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f
-        // };
+    //         -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  
+    //         0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f,
+    //         -0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  
+    //         0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f, -0.5f,  0.5f,
+    //         -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  
+    //         -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f,
+    //         0.5f,  0.5f,  0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  
+    //         0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  0.5f,
+    //         -0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.5f,  
+    //         0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f, -0.5f,
+    //         -0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.5f,  
+    //         0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f, -0.5f
+    //     };
         
         unsigned int VBO, VAO;
         glGenVertexArrays(1, &VAO);
@@ -233,24 +253,53 @@ int main(){
         glBindBuffer(GL_ARRAY_BUFFER,VBO);
         glBufferData(GL_ARRAY_BUFFER, objVertices.size()*sizeof(float) , objVertices.data(), GL_STATIC_DRAW);
         
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
         
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
+
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6* sizeof(float)));
+        glEnableVertexAttribArray(2);
+        
         glBindVertexArray(0);
         
+        unsigned int texture;
+        glGenTextures(1, &texture);
+        glBindTexture(GL_TEXTURE_2D, texture);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_set_flip_vertically_on_load(true);
+        int width, height, nrChannels;
+        unsigned char *data = stbi_load("../models/fur.jpeg", &width, &height, &nrChannels, 0);
+        if(data){
+            GLenum format;
+            if(nrChannels == 1) format = GL_RED;
+            else if(nrChannels == 3) format = GL_RGB;
+            else if(nrChannels == 4) format = GL_RGBA;
+
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+            glGenerateMipmap(GL_TEXTURE_2D);
+        }else{
+            std::cout << "Failed to load texture" << std::endl;
+        }
+        stbi_image_free(data);
+
         while(!glfwWindowShouldClose(window)){
             float currentFrame = glfwGetTime();
             deltaTime = currentFrame - lastFrame;
             lastFrame = currentFrame;
             
             inputProcess(window);
-            glClearColor(0.2f,0.231f,0.2f,1.0f);
+            glClearColor(0.2f,0.231f,0.5f,1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             
             glm::mat4 model = glm::mat4(1.0f); // object
-            model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f)); // scalling obj
+            model = glm::scale(model, glm::vec3(0.01f, 0.01f, 0.01f)); // scalling obj
             float angle = glfwGetTime() * glm::radians(50.0f); // rotate n degrees per second
             model = glm::rotate(model, angle , glm::vec3(0.0f, 0.5f, 0.0f));
             
@@ -267,8 +316,11 @@ int main(){
             int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
             glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
             
+            
+            glBindTexture(GL_TEXTURE_2D, texture);
+
             glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0 , objVertices.size()/6);
+            glDrawArrays(GL_TRIANGLES, 0 , objVertices.size()/8);
             glfwSwapBuffers(window);
             glfwPollEvents();
         }

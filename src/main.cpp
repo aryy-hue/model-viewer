@@ -138,22 +138,33 @@ int main(){
         "in vec3 FragPos;\n"
         "in vec2 TexCoord;\n"
         "out vec4 FragColor;\n"
+
         "uniform sampler2D texture1;\n"
+        "uniform vec3 viewPos;\n"
 
         "void main()\n"
         "{\n"
         "   vec3 objectColor = vec3(texture(texture1, TexCoord));\n"
         "   vec3 lightColor = vec3(1.0, 1.0, 1.0);\n"
         "   vec3 lightPos = vec3(2.0, 5.0, 3.0);\n"
-            
+        // Ambient
         "   float ambientStrength = 0.2;\n"
         "   vec3 ambient = ambientStrength * lightColor;\n"
+        // Diffuse
         "   vec3 norm = normalize(Normal);\n"
         "   vec3 lightDir = normalize(lightPos - FragPos);\n"
         "   float diff = max(dot(norm, lightDir), 0.0);\n"
         "   vec3 diffuse = diff * lightColor;\n"
-        "   vec3 result = (ambient + diffuse) * objectColor;\n"
-        "   FragColor = vec4(result, 1.0);\n"
+        // Specular
+        "float specularStrength = 0.5;\n"
+        "vec3 viewDir = normalize(viewPos - FragPos);\n"
+        "vec3 reflectDir = reflect(-lightDir, norm);\n"
+        "float spec = pow(max(dot(viewDir, reflectDir),0.0), 64);\n"
+        "vec3 specular = specularStrength * spec * lightColor;\n"
+
+        "vec3 result = (ambient + diffuse + specular) * objectColor;\n"
+        "FragColor = vec4(result, 1.0);\n"
+
         "}\n\0";
         
         GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -307,6 +318,9 @@ int main(){
 
             glUseProgram(shaderProgram);
             
+            int viewPosLoc = glGetUniformLocation(shaderProgram, "viewPos");
+            glUniform3f(viewPosLoc, cameraPos.x, cameraPos.y, cameraPos.z);
+
             int modelLoc = glGetUniformLocation(shaderProgram, "model");
             glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
             
@@ -315,7 +329,6 @@ int main(){
             
             int projectionLoc = glGetUniformLocation(shaderProgram, "projection");
             glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-            
             
             glBindTexture(GL_TEXTURE_2D, texture);
 

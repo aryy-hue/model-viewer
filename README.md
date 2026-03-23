@@ -2,11 +2,13 @@
 
 Custom-built 3D model viewer developed from the ground up using C++ and modern OpenGL. This project demonstrates a foundational understanding of the graphics pipeline, 3D transformation matrices, complex mesh data extraction, and fundamental lighting models.
 
-[Demo](assets/preview.gif)
+<p align="center">
+  <img src="assets/preview.gif" alt="demo" width="600">
+</p>
 
 ## Tech Stack & Dependencies
 
-This project leverages industry-standard computer graphics libraries:
+This project leverages computer graphics libraries:
 * **C++17** 
 * **OpenGL 3.3**
 * **GLFW** 
